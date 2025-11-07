@@ -1,50 +1,69 @@
-// server.js
-
 const express = require('express');
 const autorController = require('./autorController');
-const path = require('path'); // Importar el módulo path
+const path = require('path');
 
 const app = express();
 const PORT = 3000;
 
-// Middleware para parsear el cuerpo de las peticiones a JSON
+console.log('✅ autorController cargado');
+console.log('✅ Métodos disponibles:', Object.keys(autorController));
+
 app.use(express.json());
 
-// 💡 LÍNEA CLAVE 1: Configurar Express para servir archivos estáticos (HTML, CSS, JS)
-// Esto mapea la carpeta 'public' a la raíz del servidor '/'
-app.use(express.static(path.join(__dirname, 'public')));
-
-// 💡 LÍNEA CLAVE 2: Definir la ruta raíz para servir el archivo principal
-// Cuando alguien acceda a http://localhost:3000/, servirá el archivo autor_crud.html
-app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+// 💡 MIDDLEWARE DE DEPURACIÓN - Agrega esto
+app.use((req, res, next) => {
+    console.log(`📨 ${req.method} ${req.url}`);
+    console.log('📝 Headers:', req.headers);
+    next();
 });
 
 // ----------------------
 // ENDPOINTS DE LA API (CRUD)
 // ----------------------
 
-// C: CREATE - Crear un nuevo autor
-// POST http://localhost:3000/api/autores
-app.post('/api/autores', autorController.crearAutor);
+// Ruta de prueba simple PRIMERO
+app.get('/api/test', (req, res) => {
+    console.log('✅ Ruta /api/test alcanzada');
+    res.json({ message: 'API funcionando correctamente', timestamp: new Date() });
+});
 
 // R: READ - Obtener todos los autores
-// GET http://localhost:3000/api/autores
-app.get('/api/autores', autorController.obtenerAutores);
+app.get('/api/autores', (req, res) => {
+    console.log('✅ Ruta /api/autores alcanzada');
+    autorController.obtenerAutores(req, res);
+});
+
+// C: CREATE - Crear un nuevo autor
+app.post('/api/autores', autorController.crearAutor);
 
 // R: READ - Obtener un autor por ID
-// GET http://localhost:3000/api/autores/123
 app.get('/api/autores/:id', autorController.obtenerAutorPorId);
 
 // U: UPDATE - Actualizar un autor por ID
-// PUT http://localhost:3000/api/autores/123
 app.put('/api/autores/:id', autorController.actualizarAutor);
 
 // D: DELETE - Eliminar un autor por ID
-// DELETE http://localhost:3000/api/autores/123
 app.delete('/api/autores/:id', autorController.eliminarAutor);
 
-// Inicializar el servidor
+// Archivos estáticos
+app.use(express.static(path.join(__dirname, 'public')));
+
+app.get('/', (req, res) => {
+    console.log('✅ Ruta raíz / alcanzada');
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
+// 💡 MANEJO DE ERRORES - Agrega esto al final
+app.use((req, res) => {
+    console.log('❌ Ruta no encontrada:', req.method, req.url);
+    res.status(404).json({ 
+        error: 'Ruta no encontrada',
+        method: req.method,
+        url: req.url,
+        availableRoutes: ['/api/test', '/api/autores', '/']
+    });
+});
+
 app.listen(PORT, () => {
     console.log(`🚀 Servidor API REST escuchando en http://localhost:${PORT}`);
 });

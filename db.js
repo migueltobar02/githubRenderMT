@@ -1,17 +1,26 @@
-// db.js
+const { Pool } = require('pg');
 
-const mysql = require('mysql2');
-
-// Configuración de la conexión a la base de datos "IA-CRUD"
-const pool = mysql.createPool({
-    host: 'localhost', // O la dirección de tu servidor de BD
-    user: 'root',      // Tu usuario de MySQL
-    password: '', // Tu contraseña de MySQL
-    database: 'IA-CRUD', // Nombre de la base de datos
-    waitForConnections: true,
-    connectionLimit: 10,
-    queueLimit: 0
+// Configuración de la conexión a la base de datos PostgreSQL
+const pool = new Pool({
+  host: 'localhost',      // Servidor
+  user: 'miguel',         // Tu usuario de PostgreSQL
+  password: '12345678',     // Contraseña
+  database: 'IA-CRUD',    // Nombre de la base de datos
+  port: 5432,             // Puerto por defecto de PostgreSQL
+  max: 10,                // Máximo número de conexiones
+  idleTimeoutMillis: 30000, // Tiempo antes de cerrar una conexión inactiva
 });
 
-// Exportar el pool para ser usado en los controladores
-module.exports = pool.promise();
+// db.js
+
+
+
+// Probar conexión
+pool.connect()
+  .then(client => {
+    console.log('✅ Conexión exitosa a PostgreSQL');
+    client.release();
+  })
+  .catch(err => console.error('❌ Error al conectar con PostgreSQL:', err.stack));
+
+module.exports = pool;
