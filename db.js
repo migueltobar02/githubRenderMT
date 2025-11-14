@@ -2,18 +2,17 @@ const { Pool } = require('pg');
 
 // Configuración de la conexión a la base de datos PostgreSQL
 const pool = new Pool({
-  host: 'postgresql://miguel:EjEcAizollDD9xBjmTqn17hoT4C4dEU9@dpg-d478icqli9vc738i6b6g-a/dbpostgres_pnlq',      // Servidor
-  user: 'miguel',         // Tu usuario de PostgreSQL
-  password: 'EjEcAizollDD9xBjmTqn17hoT4C4dEU9',     // Contraseña
-  database: 'dbpostgres_pnlq',    // Nombre de la base de datos
-  port: 5432,             // Puerto por defecto de PostgreSQL
-  max: 10,                // Máximo número de conexiones
-  idleTimeoutMillis: 30000, // Tiempo antes de cerrar una conexión inactiva
+  host: 'dpg-d478icqli9vc738i6b6g-a', // SOLO el hostname
+  user: 'miguel',
+  password: 'EjEcAizollDD9xBjmTqn17hoT4C4dEU9',
+  database: 'dbpostgres_pnlq',
+  port: 5432,
+  ssl: {
+    rejectUnauthorized: false
+  },
+  max: 10,
+  idleTimeoutMillis: 30000
 });
-
-// db.js
-
-
 
 // Probar conexión
 pool.connect()
@@ -21,6 +20,6 @@ pool.connect()
     console.log('✅ Conexión exitosa a PostgreSQL');
     client.release();
   })
-  .catch(err => console.error('❌ Error al conectar con PostgreSQL:', err.stack));
+  .catch(err => console.error('❌ Error al conectar con PostgreSQL:', err));
 
 module.exports = pool;
