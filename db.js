@@ -2,7 +2,7 @@ const { Pool } = require('pg');
 
 // Configuración de la conexión a la base de datos PostgreSQL
 const pool = new Pool({
-  host: 'dpg-d478icqli9vc738i6b6g-a', // SOLO el hostname
+  host: 'dpg-d478icqli9vc738i6b6g-a', // SOLO el hostname  postgresql://miguel:EjEcAizollDD9xBjmTqn17hoT4C4dEU9@dpg-d478icqli9vc738i6b6g-a.oregon-postgres.render.com/dbpostgres_pnlq
   user: 'miguel',
   password: 'EjEcAizollDD9xBjmTqn17hoT4C4dEU9',
   database: 'dbpostgres_pnlq',
